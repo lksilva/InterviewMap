@@ -5,7 +5,7 @@
 - [Mecanismo de evento](#mecanismo-de-evento)
   - [As três fases do evento de propagação](#as-três-fases-do-evento-de-propagação)
   - [Inscrição no Evento](#inscrição-no-evento)
-  - [Event Delegation](#event-delegation)
+  - [Delegação de Eventos](#delegação-de-eventos)
 - [Cross Domain](#cross-domain)
   - [JSONP](#jsonp)
   - [CORS](#cors)
@@ -95,20 +95,20 @@ Se um nó filho dentro de um nó pai é dinâmicamente gerado, eventos no nó de
 </script>
 ```
 
-Event delegation has the following advantages over adding events straight to child nodes:
+Delegação de eventos tem as seguintes vatagens sobre adicionar eventos em linha reta para os nós filhos:
 
-- Save memory
-- No need remove event listeners on child nodes
+- Economiza memória
+- Não precisa remover event listeners nos nós filhos
 
 # Cross Domain
 
-Browsers have the same-origin policy for security reasons. In other words, if the protocol, domain name or port has one difference, that would be cross-domain, and the Ajax request will fail.
+Navegadores tem a política de mesma origem por razões de segurança. Em outras palavras, se o protocolo, nome do domínio ou porta tem uma diferença, isso seria cross-domain, e a requisição irá falhar.
 
-We can solve the cross-domain issues through following methods:  
+Nós podemos resolver o problema de cross-domain através dos seguintes métodos: 
 
 ## JSONP
 
-The principle of JSONP is very simple, that is to make use of the `<script>` tag not subject to same-origin policy. Use the `src` attribute of `<script>` tag and provide a callback function to receive data:
+O princípio do JSONP é muito simples, isso é fazer uso da `<script>` tag não sujeito a política de mesma origem. Use o atributo `src` da `<script>` tag e prover uma função callback to receber os dados:
 
 ```js
 <script src="http://domain/api?param1=a&param2=b&callback=jsonp"></script>
@@ -119,9 +119,9 @@ The principle of JSONP is very simple, that is to make use of the `<script>` tag
 </script>    
 ```
 
-JSONP is simple to use and has good compatibility, but is limited to `get` requests.
+JSONP é simples para usar e tem ótima compatibilidade, mas isso é limitado a requisições `get`.
 
-You may encounter the situation where you have the same callback names in multiple JSONP requests. In this situation you need to encapsulate JSONP. The following is a simple implementation:
+Você pode encontrar a situações onde você tem algum nome de callback em múltiplas requisições JSONP. Nessa situação você precisa encapsular JSONP. O seguinte é uma simples implementação:
 
 ```js
 function jsonp(url, jsonpCallback, success) {
