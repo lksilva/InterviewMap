@@ -75,9 +75,9 @@ node.addEventListener('click',(event) => {
 },true)
 ```
 
-## Event Delegation
+## Delegação de Eventos
 
-If a child node inside a parent node is dynamically generated, events on the child node should be added to parent node:
+Se um nó filho dentro de um nó pai é dinâmicamente gerado, eventos no nó deveram ser adicionados ao nó pai:
 
 ```html
 <ul id="ul">
