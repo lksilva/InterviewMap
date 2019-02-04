@@ -3,8 +3,8 @@
 **Tabela de donteúdos**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Mecanismo de evento](#mecanismo-de-evento)
-  - [The three phases of event propagation](#the-three-phases-of-event-propagation)
-  - [Event Registration](#event-registration)
+  - [As três fases do evento de propagação](#as-três-fases-do-evento-de-propagação)
+  - [Inscrição no Evento](#inscrição-no-evento)
   - [Event Delegation](#event-delegation)
 - [Cross Domain](#cross-domain)
   - [JSONP](#jsonp)
@@ -53,22 +53,23 @@ node.addEventListener('click',(event) =>{
 },true)
 ```
 
-## Event Registration
+## Inscrição no Evento
 
-Usually, we use `addEventListener` to register an event, and the `useCapture` is a function parameter, which receives a Boolean value, the default value is `false`. `useCapture` determines whether the registered event is a capturing event or a bubbling event. For the object parameter, you can use the following properties:
+Geralmente, usamos o `addEventListener` para registrar um evento, e o `useCapture` é uma função parâmentro, do qual recebe um valos boleano, o valor padrão é `false`. `useCapture` determina se o evento registrado é está capturando eventos ou um evento bubbling. Para o objeto parâmentro, você pode usar as seguintes propriedades:
 
-- `capture`, Boolean value, same as `useCapture`
-- `once`, Boolean value, `true` indicating that the callback should be called at most once, after invoked the listener will be removed
-- `passive`, Boolean, means it will never call `preventDefault`
+- `capture`, valor boleano, igua a `useCapture`
+- `once`, valor boleano, `true` indica que o callback deveria ser chamado mais de uma vez, depois invocado o listener será removido
+- `passive`, boleano, significa ele nunca irá chamar `preventDefault`
 
-Generally speaking, we only want the event to trigger on the target. To achieve this we can use `stopPropagation` to prevent the propagation of the event. Usually, we would think that `stopPropagation` is used to stop the event bubbling, but this function can also prevent the event capturing. `stopImmediatePropagation` can achieve the same effects, and it can also prevent other listeners of the same event from being called.
+Generalizando, nós queremos apenas que o evento dispare no alvo. Para alcançar isso nós usamos `stopPropagation` para previnir a propagação do evento. Usualmente, nós deveriamos pensar que `stopPropagation` é usado para parar o evento bubbling, mas essa função também pode prevenir o evento capturado.
+`stopImmediatePropagation` pode alcançar o mesmo efeito, e isso pode também previnir outros listeners do mesmo evento a partir da chamada.
 
 ```js
 node.addEventListener('click',(event) =>{
 	event.stopImmediatePropagation()
 	console.log('bubbling')
 },false);
-// Clicking node will only execute the above function, this function will not execute
+// Clicando no nó irá apenas executar a função abaixo, essa função não irá executar
 node.addEventListener('click',(event) => {
 	console.log('capture ')
 },true)
