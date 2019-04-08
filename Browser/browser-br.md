@@ -145,26 +145,26 @@ jsonp(
 
 ## CORS
 
-CORS requires browser and backend support at the same time. Internet Explorer 8 and 9 expose CORS via the XDomainRequest object.
+CORS requer suporte dos navegadores e do backend ao mesmo tempo. Internet Explorer 8 e 9 expõe CORS via XDomainRequest object.
 
-The browser will automatically perform CORS. The key to implementing CORS is the backend. As long as the backend implements CORS, it enables cross-domain.
+O navegador vai automaticamente realizar CORS. A chave para implementar CORS é o backend. Enquanto o backend implementa CORS, ele habilita cross-domain.
 
-The server sets `Access-Control-Allow-Origin` to enable CORS. This property specifies which domains can access the resource. If set to wildcard, all websites can access the resource.
+O servidor seta `Access-Control-Allow-Origin` para habilitar CORS. Essa propriedade especifica quais dominios podem acesar os recursos. Se definido como curinga, todos os websites podem acessar os recursos.
 
 ## document.domain
 
-This can only be used for the same second-level domain, for example, `a.test.com` and `b.test.com` are suitable for this case.
+Esse só pode ser usando para o mesmo second-level de domínio, por exemplo, `a.test.com` e `b.test.com` são adequados para esse caso.
 
-Set `document.domain = 'test.com'` would enable CORS within the same second-level domain.
+Set `document.domain = 'test.com'` habilitaria CORS com o mesmo domínio de segundo nível.
 
 ## postMessage
 
-This method is usually used to get data from embedded third-party page. One page sends a message, the other page checks the source and receives the message:
+Esse método é geralmente usado para pegar dados a partir de página de terceiros. Uma página envia uma mensagem, a outra página verifica os arquivos e recebe a mensagem:
 
 ```js
-// send of page
+// envia a página
 window.parent.postMessage('message', 'http://test.com');
-// receive of page
+// recebe da página
 var mc = new MessageChannel();
 mc.addEventListener('message', (event) => {
     var origin = event.origin || event.originalEvent.origin;
