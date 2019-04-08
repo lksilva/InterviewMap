@@ -176,9 +176,9 @@ mc.addEventListener('message', (event) => {
 
 # Event Loop
 
-As we all know, JS is a non-blocking and single-threaded language, because JS was born to interact with the browser in the beginning. If JS was a multi-threaded language, we might have problems handling DOM in multiple threads (imagine adding nodes in a thread and deleting nodes in another thread at the same time), however we could introduce a read-write lock to solve this problem.
+Como bem sabemos, JS é não bloqueante e linguagem single-threaded, porque JS nasceu para interagir com o navegador no inicio. Se JS fosse uma linguagem multi-threaded, nós teriamos problemas para manipular o DOM em multiplas threads (imagine adicionar nós em um thread e deletar nós em outra thread ao mesmo tempo), contudo nós deveriamos introduzir uma tranca de leitura-escrita para resolver esse problema. 
 
-Execution context, generated during JS execution, will be pushed into call stack sequentially. Asynchronous codes will hang up and get pushed into the task queues (there are multiple kinds of tasks). Once the call stack is empty, the Event Loop will process the next message in the task queues and push it into the call stack for execution, thus essentially the asynchronous operation in JS is actually synchronous.
+Executando contexto, gerado durante a execução do JS, será empurrado dentro pilha de chamadas sequencialmente. Código assíncrono irá desligar ser empurrado dentro da filha de tarefas, existe múltiplos tipos de tarefas. Uma vez a pilha de chamadas estive vázia, o Event Loop vai processar a próxima mensagem na fila de tarefas e colocar dentro pilha de chamadas para executar, portanto essencialmente a operação assíncrona em JS é atualmente síncrona.
 
 ```js
 console.log('script start');
