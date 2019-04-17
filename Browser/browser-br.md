@@ -190,9 +190,9 @@ setTimeout(function() {
 console.log('script end');
 ```
 
-The above code is asynchronous, even though the `setTimeout` delay is 0. That’s because the HTML5 standard stipulates that the second parameter of the function  `setTimeout` must not be less than 4 milliseconds, otherwise it will automatically .  So `setTimeout` is still logged after `script end`.
+O código acima é assíncrono, apesar do `setTimeout` delay ser 0. Issso aconteceu porque o padrão HTML5 estipula que o segundo parâmetro da função `setTimeout` não deve ser menos que 4 milissegundos, de outra forma será automático. Então `setTimeout` é logado depois do `script end`.
 
-Different tasks are assigned to different Task queues. Tasks can be divided into `microtasks` and `macrotasks`. In the ES6 specification, a `microtask` is called a `job` and a `macrotask` is called a `task`.
+Tarefas diferentes são assinadas para fila de tarefas diferentes. Tarefas podem ser divididas em `microtasks` e `macrotasks`. Na especificação ES6, uma `microtask` é chamada em um `job` e uma `macrotask` é chamada em uma `task`.
 
 ```js
 console.log('script start');
@@ -214,23 +214,23 @@ console.log('script end');
 // script start => Promise => script end => promise1 => promise2 => setTimeout
 ```
 
-Although `setTimeout` is set before `Promise`, the above printing still occurs because `Promise` belongs to microtask and `setTimeout` belongs to macrotask.
+Apesar `setTimeout` estar definido antes `Promise`, o print acima ainda ocorro porque `Promise` pertence a microtask e `setTimeout` pertence a macrotask.
 
-Microtasks include `process.nextTick`, `promise`, `Object.observe` and `MutationObserver`.
+Microtask incluem `process.nextTick`, `promise`, `Object.observe` e `MutationObserver`.
 
-Macrotasks include `script`, `setTimeout`, `setInterval`, `setImmediate`, `I/O` and `UI rendering`.
+Macrotasks incluem `script`, `setTimeout`, `setInterval`, `setImmediate`, `I/O` and `UI rendering`.
 
-Many people have the misunderstanding that microtasks always get executed before macrotasks and this is incorrect. Because the macrotask includes `script`, the browser will perform this macrotask first, followed by any microtasks in asynchronous codes.
+Muitas pessoas cometem o mal entendido que microtasks sempre são executadas antes das macrotasks e isso não é verdade. Porque a macrotask incluem `script`, o browser ira realizar essas macrotask primeiro, seguido por qualquer microtask em um código assíncrono.
 
-So the correct sequence of an event loop looks like this:
+Então a sequência correta de um event loop parece algo como esse:
 
-1. Execute synchronous codes, which belongs to macrotask
-2. Once call stack is empty, query if any microtasks need to be executed
-3. Execute all the microtasks
-4. If necessary, render the UI
-5. Then start the next round of the Event loop, and execute the asynchronous operations in the macrotask
+1. Executa código assíncrono, que pertence a uma macrotask
+2. Uma vez a pilha de chamadas vázia, busca se qualquer microtask precisa ser executada
+3. Execute todas as microtasks
+4. Se necessário, renderize a UI
+5. Então começe o próximo ciclo do event loop, e execute a operação assíncrona em uma macrotask
 
-According to the above sequence of the event loop, if the asynchronous codes in the macrotask have a large number of calculations and need to operate on DOM, we can put DOM operation into microtask for faster interface response.
+De acordo com a sequência acima do event loop, se o código assíncrono é uma macrotask tendo uma grande número de calculos e precisa operar no DOM, colocamos a operação do DOM em uma microtask para uma rápida resposta na interface.
 
 ## Event Loop in Node
 
