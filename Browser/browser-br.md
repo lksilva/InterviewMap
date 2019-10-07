@@ -1,6 +1,7 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Tabela de donteúdos**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+**Tabela de donteúdos** _generated with [DocToc](https://github.com/thlorenz/doctoc)_
 
 - [Mecanismo de evento](#mecanismo-de-evento)
   - [As três fases do evento de propagação](#as-três-fases-do-evento-de-propagação)
@@ -12,7 +13,7 @@
   - [document.domain](#documentdomain)
   - [postMessage](#postmessage)
 - [Event Loop](#event-loop)
-  - [Event Loop in Node](#event-loop-in-node)
+  - [Event Loop no Node](#event-loop-no-node)
     - [timer](#timer)
     - [pending callbacks](#pending-callbacks)
     - [idle, prepare](#idle-prepare)
@@ -37,7 +38,7 @@
 O evento de propagação tem três fases:
 
 - O objeto de evento se propaga do Window para o pai do alvo.
-Captura de eventos irá disparar.
+  Captura de eventos irá disparar.
 - O objeto de evento chega ao destino de evento do objeto alvo. Eventos registrados para o alvo serão disparados.
 - O objeto de evento propaga do alvo pai para o Window. Eventos Bubbling irão disparar.
 
@@ -45,12 +46,20 @@ O evento de propagação geralmente segue a sequência abaixo, mas existe excess
 
 ```js
 // O seguinte code ira mostrar bubbling primeiro e então disparar a captura de eventos
-node.addEventListener('click',(event) =>{
-	console.log('bubble')
-},false);
-node.addEventListener('click',(event) =>{
-	console.log('capture')
-},true)
+node.addEventListener(
+  "click",
+  event => {
+    console.log("bubble");
+  },
+  false
+);
+node.addEventListener(
+  "click",
+  event => {
+    console.log("capture");
+  },
+  true
+);
 ```
 
 ## Inscrição no Evento
@@ -65,14 +74,22 @@ Generalizando, nós queremos apenas que o evento dispare no alvo. Para alcançar
 `stopImmediatePropagation` pode alcançar o mesmo efeito, e isso pode também previnir outros listeners do mesmo evento a partir da chamada.
 
 ```js
-node.addEventListener('click',(event) =>{
-	event.stopImmediatePropagation()
-	console.log('bubbling')
-},false);
+node.addEventListener(
+  "click",
+  event => {
+    event.stopImmediatePropagation();
+    console.log("bubbling");
+  },
+  false
+);
 // Clicando no nó irá apenas executar a função abaixo, essa função não irá executar
-node.addEventListener('click',(event) => {
-	console.log('capture ')
-},true)
+node.addEventListener(
+  "click",
+  event => {
+    console.log("capture ");
+  },
+  true
+);
 ```
 
 ## Delegação de Eventos
@@ -81,17 +98,17 @@ Se um nó filho dentro de um nó pai é dinâmicamente gerado, eventos no nó de
 
 ```html
 <ul id="ul">
-	<li>1</li>
-    <li>2</li>
-	<li>3</li>
-	<li>4</li>
-	<li>5</li>
+  <li>1</li>
+  <li>2</li>
+  <li>3</li>
+  <li>4</li>
+  <li>5</li>
 </ul>
 <script>
-	let ul = document.querySelector('#ul')
-	ul.addEventListener('click', (event) => {
-		console.log(event.target);
-	})
+  let ul = document.querySelector("#ul");
+  ul.addEventListener("click", event => {
+    console.log(event.target);
+  });
 </script>
 ```
 
@@ -104,7 +121,7 @@ Delegação de eventos tem as seguintes vatagens sobre adicionar eventos em linh
 
 Navegadores tem a política de mesma origem por razões de segurança. Em outras palavras, se o protocolo, nome do domínio ou porta tem uma diferença, isso seria cross-domain, e a requisição irá falhar.
 
-Nós podemos resolver o problema de cross-domain através dos seguintes métodos: 
+Nós podemos resolver o problema de cross-domain através dos seguintes métodos:
 
 ## JSONP
 
@@ -116,7 +133,7 @@ O princípio do JSONP é muito simples, isso é fazer uso da `<script>` tag não
     function jsonp(data) {
     	console.log(data)
 	}
-</script>    
+</script>
 ```
 
 JSONP é simples para usar e tem ótima compatibilidade, mas isso é limitado a requisições `get`.
@@ -134,13 +151,9 @@ function jsonp(url, jsonpCallback, success) {
   };
   document.body.appendChild(script);
 }
-jsonp(
-  "http://xxx",
-  "callback",
-  function(value) {
-    console.log(value);
-  }
-);
+jsonp("http://xxx", "callback", function(value) {
+  console.log(value);
+});
 ```
 
 ## CORS
@@ -163,31 +176,31 @@ Esse método é geralmente usado para pegar dados a partir de página de terceir
 
 ```js
 // envia a página
-window.parent.postMessage('message', 'http://test.com');
+window.parent.postMessage("message", "http://test.com");
 // recebe da página
 var mc = new MessageChannel();
-mc.addEventListener('message', (event) => {
-    var origin = event.origin || event.originalEvent.origin;
-    if (origin === 'http://test.com') {
-        console.log('success')
-    }
+mc.addEventListener("message", event => {
+  var origin = event.origin || event.originalEvent.origin;
+  if (origin === "http://test.com") {
+    console.log("success");
+  }
 });
 ```
 
 # Event Loop
 
-Como bem sabemos, JS é não bloqueante e linguagem single-threaded, porque JS nasceu para interagir com o navegador no inicio. Se JS fosse uma linguagem multi-threaded, nós teriamos problemas para manipular o DOM em multiplas threads (imagine adicionar nós em um thread e deletar nós em outra thread ao mesmo tempo), contudo nós deveriamos introduzir uma tranca de leitura-escrita para resolver esse problema. 
+Como bem sabemos, JS é não bloqueante e linguagem single-threaded, porque JS nasceu para interagir com o navegador no inicio. Se JS fosse uma linguagem multi-threaded, nós teriamos problemas para manipular o DOM em multiplas threads (imagine adicionar nós em um thread e deletar nós em outra thread ao mesmo tempo), contudo nós deveriamos introduzir uma tranca de leitura-escrita para resolver esse problema.
 
 Executando contexto, gerado durante a execução do JS, será empurrado dentro pilha de chamadas sequencialmente. Código assíncrono irá desligar ser empurrado dentro da filha de tarefas, existe múltiplos tipos de tarefas. Uma vez a pilha de chamadas estive vázia, o Event Loop vai processar a próxima mensagem na fila de tarefas e colocar dentro pilha de chamadas para executar, portanto essencialmente a operação assíncrona em JS é atualmente síncrona.
 
 ```js
-console.log('script start');
+console.log("script start");
 
 setTimeout(function() {
-  console.log('setTimeout');
+  console.log("setTimeout");
 }, 0);
 
-console.log('script end');
+console.log("script end");
 ```
 
 O código acima é assíncrono, apesar do `setTimeout` delay ser 0. Issso aconteceu porque o padrão HTML5 estipula que o segundo parâmetro da função `setTimeout` não deve ser menos que 4 milissegundos, de outra forma será automático. Então `setTimeout` é logado depois do `script end`.
@@ -195,22 +208,24 @@ O código acima é assíncrono, apesar do `setTimeout` delay ser 0. Issso aconte
 Tarefas diferentes são assinadas para fila de tarefas diferentes. Tarefas podem ser divididas em `microtasks` e `macrotasks`. Na especificação ES6, uma `microtask` é chamada em um `job` e uma `macrotask` é chamada em uma `task`.
 
 ```js
-console.log('script start');
+console.log("script start");
 
 setTimeout(function() {
-  console.log('setTimeout');
+  console.log("setTimeout");
 }, 0);
 
-new Promise((resolve) => {
-    console.log('Promise')
-    resolve()
-}).then(function() {
-  console.log('promise1');
-}).then(function() {
-  console.log('promise2');
-});
+new Promise(resolve => {
+  console.log("Promise");
+  resolve();
+})
+  .then(function() {
+    console.log("promise1");
+  })
+  .then(function() {
+    console.log("promise2");
+  });
 
-console.log('script end');
+console.log("script end");
 // script start => Promise => script end => promise1 => promise2 => setTimeout
 ```
 
@@ -232,11 +247,11 @@ Então a sequência correta de um event loop parece algo como esse:
 
 De acordo com a sequência acima do event loop, se o código assíncrono é uma macrotask tendo uma grande número de calculos e precisa operar no DOM, colocamos a operação do DOM em uma microtask para uma rápida resposta na interface.
 
-## Event Loop in Node
+## Event Loop no Node
 
-The event loop in Node is not the same as in the browser.
+O event loop no Node não se comporta da mesma maneira como no navegador.
 
-The event loop in Node is divided into 6 phases, and they will be executed in order repeatedly:
+O event loop no Node é dividido em 6 fases, e eles são executados em ordem repetidamente:
 
 ```
    ┌───────────────────────┐
@@ -261,32 +276,33 @@ The event loop in Node is divided into 6 phases, and they will be executed in or
 
 ### timer
 
-The `timer` phase executes the callbacks of `setTimeout` and `setInterval`.
+A fase do `timer` executa as callback de `setTimeout` e `setInterval`.
 
-`Timer` specifies the time that callbacks will run as early as they can be scheduled, after the specified amount of time has passed rather than the exact time a person wants it to be executed.
+O `Time` especifica o tempo que a callback vai executar tanto quanto eles podem ser agendados, depois a quantidade especifica de tempo passado ao invés do tempo exato que uma pessoa quer que ele seja executado.
 
-The lower bound time has a range: `[1, 2147483647]`. If the set time is not in this range, it will be set to 1.
+O limite minimo de tempo está entre `[1, 2147483647]`. Se o conjunto de tempo não está nesse intervalo, ele será setado para 1.
 
 ### pending callbacks
 
-This phase executes I/O callbacks deferred to the next loop iteration.
+Essa fase executa I/O callbacks diferida para a próxima iteração do loop.
 
 ### idle, prepare
 
-The `idle, prepare` phase is for internal implementation.
+A fase do `idle, prepare` serve para implementação interna.
 
 ### poll
 
-This phase retrieves new I/O events; execute I/O related callbacks (almost all with the exception of close callbacks, the ones scheduled by timers, and setImmediate()); node will block here when appropriate.
+Essa fase recebe novos eventos de I/O; executa o I/O relacionado as callbacks (quase sempre com a excessão de fechar as callbacks, os agendados pelos timers, e setImmediate()); node irá bloquear aqui quando apropriado.
 
-The `poll` phase has two main functions:
+O `poll` é a fase de duas funções principais:
 
-1. Calculating how long it should block and poll for I/O, then
-2. Processing events in the poll queue.
+1. Calcular quanto tempo ele deverá bloquear e executar a votação do I/O, então
+2. Processar os eventos na fila de votação.
 
-When the event loop enters the `poll` phase and there are no timers scheduled, one of two things will happen:
+Quando o evet loop entra na fase de `poll` não existe timers agendados, uma das duas coisas vai acontecer:
 
-- If the `poll` queue is not empty, the event loop will iterate through its queue of callbacks executing them synchronously until either the queue has been exhausted, or the system-dependent hard limit is reached.
+- Se o a fila do `poll` não estive vázia, o evet loop vai iterar através dessa fila de callbacks executando eles sincronamente até ou a fila ser percorrida, ou o sistema chegar no seu limite.
+
 - If the `poll` queue is empty, one of two more things will happen:
   1. If scripts have been scheduled by `setImmediate`. the event loop will end the `poll` phase and continue to the check phase to execute those scheduled scripts.
   2. If scripts have not been scheduled by `setImmediate`, the event loop will wait for callbacks to be added to the queue, then execute them immediately.
@@ -305,11 +321,11 @@ And in Node, the order of execution of timers is random in some cases:
 
 ```js
 setTimeout(() => {
-    console.log('setTimeout');
+  console.log("setTimeout");
 }, 0);
 setImmediate(() => {
-    console.log('setImmediate');
-})
+  console.log("setImmediate");
+});
 // Here, it may log setTimeout => setImmediate
 // It is also possible to log the opposite result, which depends on performance
 // Because it may take less than 1 millisecond to enter the event loop, `setImmediate` would be executed at this time.
@@ -319,15 +335,15 @@ setImmediate(() => {
 Certainly, in this case, the execution order is the same:
 
 ```js
-var fs = require('fs')
+var fs = require("fs");
 
 fs.readFile(__filename, () => {
-    setTimeout(() => {
-        console.log('timeout');
-    }, 0);
-    setImmediate(() => {
-        console.log('immediate');
-    });
+  setTimeout(() => {
+    console.log("timeout");
+  }, 0);
+  setImmediate(() => {
+    console.log("immediate");
+  });
 });
 // Because the callback of `readFile` was executed in `poll` phase
 // Founding `setImmediate`,it immediately jumps to the `check` phase to execute the callback
@@ -338,21 +354,21 @@ fs.readFile(__filename, () => {
 The above is the implementation of the macrotask. The microtask will be executed immediately after each phase is completed.
 
 ```js
-setTimeout(()=>{
-    console.log('timer1')
+setTimeout(() => {
+  console.log("timer1");
 
-    Promise.resolve().then(function() {
-        console.log('promise1')
-    })
-}, 0)
+  Promise.resolve().then(function() {
+    console.log("promise1");
+  });
+}, 0);
 
-setTimeout(()=>{
-    console.log('timer2')
+setTimeout(() => {
+  console.log("timer2");
 
-    Promise.resolve().then(function() {
-        console.log('promise2')
-    })
-}, 0)
+  Promise.resolve().then(function() {
+    console.log("promise2");
+  });
+}, 0);
 // The log result is different, when the above code is executed in browser and node
 // In browser, it will log: timer1 => promise1 => timer2 => promise2
 // In node, it may log: timer1 => timer2 => promise1 => promise2
@@ -380,28 +396,28 @@ process.nextTick(() => {
 
 ## cookie，localStorage，sessionStorage，indexDB
 
-|        features         |                            cookie                            |               localStorage                |                        sessionStorage                        |                  indexDB                  |
-| :---------------------: | :----------------------------------------------------------: | :---------------------------------------: | :----------------------------------------------------------: | :---------------------------------------: |
-|   Life cycle of data   | generally generated by the server, but you can set the expiration time | unless cleared manually, it always exists | once the browser tab is closed, it will be cleaned up immediately | unless cleared manually, it always exists |
-|  Storage size of data   |                              4K                              |                    5M                     |                              5M                              |                 unlimited                 |
-| Communication with server | it is carried in the header everytime, and has a performance impact on the request |            doesn't participate            |                     doesn't participate                      |            doesn't participate            |
+|         features          |                                       cookie                                       |               localStorage                |                          sessionStorage                           |                  indexDB                  |
+| :-----------------------: | :--------------------------------------------------------------------------------: | :---------------------------------------: | :---------------------------------------------------------------: | :---------------------------------------: |
+|    Life cycle of data     |       generally generated by the server, but you can set the expiration time       | unless cleared manually, it always exists | once the browser tab is closed, it will be cleaned up immediately | unless cleared manually, it always exists |
+|   Storage size of data    |                                         4K                                         |                    5M                     |                                5M                                 |                 unlimited                 |
+| Communication with server | it is carried in the header everytime, and has a performance impact on the request |            doesn't participate            |                        doesn't participate                        |            doesn't participate            |
 
 As we can see from the above table, `cookies` are no longer recommended for storage. We can use `localStorage` and `sessionStorage` if we don't have much data to store. Use `localStorage` to store data that doesn't change much, otherwise `sessionStorage` can be used.
 
 For `cookies`, we also need pay attention to security issue.
 
-| attribute |                            effect                            |
-| :-------: | :----------------------------------------------------------: |
+| attribute |                                                   effect                                                   |
+| :-------: | :--------------------------------------------------------------------------------------------------------: |
 |   value   | the value should be encrypted if used to save the login state, and the cleartext user ID shouldn't be used |
-| http-only | cookies cannot be accessed through JS, for reducing XSS attack |
-|  secure   | cookies can only be carried in requests with HTTPS protocol  |
-| same-site | browsers cannot pass cookies in cross-origin requests, for reducing CSRF attacks |
+| http-only |                       cookies cannot be accessed through JS, for reducing XSS attack                       |
+|  secure   |                        cookies can only be carried in requests with HTTPS protocol                         |
+| same-site |              browsers cannot pass cookies in cross-origin requests, for reducing CSRF attacks              |
 
 ## Service Worker
 
 > Service workers essentially act as proxy servers that sit between web applications, the browser and the network (when available). They are intended, among other things, to enable the creation of effective offline experiences, intercept network requests and take appropriate action based on whether the network is available, and update assets residing on the server. They will also allow access to push notifications and background sync APIs.
 
-At present, this technology is usually used to cache files and increase the render speed of the first screen. We can try to  implement this function:
+At present, this technology is usually used to cache files and increase the render speed of the first screen. We can try to implement this function:
 
 ```js
 // index.js
@@ -474,7 +490,6 @@ When the HTML is parsing the script tag, the DOM is paused and will restart from
 ![](https://user-gold-cdn.xitu.io/2018/7/8/1647838a3b408372?w=1676&h=688&f=png&s=154480)
 
 ![](https://user-gold-cdn.xitu.io/2018/7/8/16478388e773b16a?w=1504&h=760&f=png&s=123231)
-
 
 ## Difference between Load & DOMContentLoaded
 
@@ -551,19 +566,19 @@ All of the above are from [HTML Documents](https://html.spec.whatwg.org/multipag
 ```html
 <div class="test"></div>
 <style>
-	.test {
-		position: absolute;
-		top: 10px;
-		width: 100px;
-		height: 100px;
-		background: red;
-	}
+  .test {
+    position: absolute;
+    top: 10px;
+    width: 100px;
+    height: 100px;
+    background: red;
+  }
 </style>
 <script>
-	setTimeout(() => {
-        // occurs reflow
-		document.querySelector('.test').style.top = '100px'
-	}, 1000)
+  setTimeout(() => {
+    // occurs reflow
+    document.querySelector(".test").style.top = "100px";
+  }, 1000);
 </script>
 ```
 
@@ -574,9 +589,9 @@ All of the above are from [HTML Documents](https://html.spec.whatwg.org/multipag
 - Do not put an attribute of a node inside a loop:
 
 ```js
-for(let i = 0; i < 1000; i++) {
-    // it will cause the reflow to get offsetTop, because it need to calculate the right value
-    console.log(document.querySelector('.test').style.offsetTop)
+for (let i = 0; i < 1000; i++) {
+  // it will cause the reflow to get offsetTop, because it need to calculate the right value
+  console.log(document.querySelector(".test").style.offsetTop);
 }
 ```
 
